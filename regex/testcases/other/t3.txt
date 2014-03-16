@@ -1,0 +1,13 @@
+(((eH)*(He))|(e(e|~)))*
+eeee
+eHHe
+eH
+eHee
+eeHeHe
+eeHeHee
+eeHeHeeH
+
+star node
+	or node
+		concat node
+		
