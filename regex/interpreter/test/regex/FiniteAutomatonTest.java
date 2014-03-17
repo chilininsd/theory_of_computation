@@ -40,13 +40,13 @@ public class FiniteAutomatonTest {
         testRegex.invoke(null, t1);
     }
     
-    @Test public void testMalformedRegex2() throws NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException
+    @Test public void testMalformedRegex2() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException
     {
         String t2 = "((0|1|~)(0|1|2|3|4|5|6|7|8|9)(0|1|2|3|4|5|6|7|8|9|~)|2(0|1|2|3|4)(0|1|2|3|4|5|6|7|8|9)|25(0|1|2|3|4|5)).";
         testRegex.invoke(null, t2);
     }
     
-    @Test public void testMalformedRegex3() throws NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException
+    @Test public void testMalformedRegex3() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException
     {
         String t3 = "<((\"(a|b|'|=| |/|>|<)*\")|('(a|b|\"|=| |/|<|>)*')|(a|b|=| |/))*>";
         testRegex.invoke(null, t3);

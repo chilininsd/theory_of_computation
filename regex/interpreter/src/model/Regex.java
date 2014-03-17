@@ -36,5 +36,9 @@ public class Regex {
         }
         return s.toString();
     }
-    
+
+    public List<RegexNode> getContents()
+    {
+        return contents;
+    }
 }

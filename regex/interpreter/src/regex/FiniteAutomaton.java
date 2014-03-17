@@ -9,8 +9,14 @@ package regex;
 import exceptions.MalformedRegexException;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import model.Regex;
+import nfa.Machine;
+import nodes.ParenNode;
+import nodes.RegexNode;
+import nodes.SimpleNode;
+import nodes.StarNode;
 
 /**
  *
@@ -18,16 +24,26 @@ import model.Regex;
  */
 public class FiniteAutomaton {
     
+    public static Machine toMachine(String reg)
+    {
+        FiniteAutomaton fa = new FiniteAutomaton();
+        Regex r = RegexParser.parse(reg);
+        return fa.constructMachine(r.getContents());
+    }
+    
     public static void main(String[] args) throws MalformedRegexException
     {
-        checkRegex(args[0]);
-        Regex r = RegexParser.parse(args[0]);
+        String reg = "((i|J)(i|J))*";
+//        checkRegex(reg);
+        Machine m = FiniteAutomaton.toMachine(reg);
+        
+        
     }
 
     private static void checkRegex(String string) throws MalformedRegexException
     {
         Set<String> validSymbols = new HashSet<>();
-        String[] symbols = new String[] {"a", "b", "m", "p", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "\"", "\'", "/", "<", ">", "=", " ", "~", "|", "(", ")", "*"};
+        String[] symbols = new String[] {"a", "b", "m", "p", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "\"", "\'", "/", "<", ">", "=", " ", "~", "|", "(", ")", "*", ":"};
         validSymbols.addAll(Arrays.asList(symbols));
         
         for (int i = 0; i < string.length(); i++)
@@ -37,5 +53,24 @@ public class FiniteAutomaton {
                 throw new MalformedRegexException(string.charAt(i)+"");
             }
         }
+    }
+    
+    private Machine constructMachine(List<RegexNode> nodes)
+    {
+        Machine m = new Machine();
+        for (RegexNode regex : nodes)
+        {
+            if (regex instanceof SimpleNode)
+            {
+                m.add(regex);
+            }
+            else if (regex instanceof ParenNode)
+            {
+                ParenNode p = (ParenNode)regex;
+                m.addMachine(constructMachine(p.getContents()));
+                m.setIsStar(regex instanceof StarNode);
+            }
+        }
+        return m.finalizeMachine();
     }
 }
