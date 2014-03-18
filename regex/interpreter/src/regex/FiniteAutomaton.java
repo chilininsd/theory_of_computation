@@ -37,10 +37,14 @@ public class FiniteAutomaton {
     
     public static void main(String[] args) throws MalformedRegexException
     {
-        String reg = "((0|1|~)(0|1|2|3|4|5|6|7|8|9)(0|1|2|3|4|5|6|7|8|9|~)|2(0|1|2|3|4)(0|1|2|3|4|5|6|7|8|9)|25(0|1|2|3|4|5)).";
+//        String reg = "((0|1|~)(0|1|2|3|4|5|6|7|8|9)(0|1|2|3|4|5|6|7|8|9|~)|2(0|1|2|3|4)(0|1|2|3|4|5|6|7|8|9)|25(0|1|2|3|4|5)).";
+        String reg = "<((\"(a|b|'|=| |/|>|<)*\")|('(a|b|\"|=| |/|<|>)*')|(a|b|=| |/))*>";
+
         checkRegex(reg);
         Graph m = FiniteAutomaton.toMachine(reg);
-        List<String> testCases = Arrays.asList(new String[]{"1.", "255.", "127.", "10.", "a.", "990.", "~"});
+//        List<String> testCases = Arrays.asList(new String[]{"1.", "255.", "127.", "10.", "a.", "990.", "~"});
+        List<String> testCases = Arrays.asList(new String[]{"<>", "<b a='>'>", "<b/>", "<a b=\"ab'\" aba='/'>", "<a b=a<>", "<b aaa='>", "<a b='aba<' />"});
+
         for (String string : testCases)
         {
             if (m.match(string))

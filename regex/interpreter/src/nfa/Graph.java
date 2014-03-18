@@ -2,9 +2,10 @@ package nfa;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Map.Entry;
+import java.util.Queue;
 import java.util.Set;
-import java.util.Stack;
 import nodes.OrNode;
 import nodes.RegexNode;
 import nodes.SimpleNode;
@@ -69,27 +70,33 @@ public class Graph extends NfaNode {
 
     public boolean match(String pattern)
     {
-        Stack<Entry<String, NfaNode>> stack = new Stack<>();
-        stack.addAll(start.getAllTransitions());
+        Queue<Entry<String, NfaNode>> queue = new LinkedList<>();
+        queue.addAll(start.getAllTransitions());
         
         Entry<String, NfaNode> entry = null;
+        Set<Entry<String, NfaNode>> successfulTransitions = new HashSet<>();
         for (int i = 0; i < pattern.length(); i++)
         {
+            Set<Entry<String, NfaNode>> toAdd = new HashSet<>();
             String c = pattern.charAt(i) + "";
-            while (!stack.isEmpty())
+            while (!queue.isEmpty())
             {
-                entry = stack.pop();
+                entry = queue.poll();
                 if (entry.getKey().equals(c))
                 {
-                    stack.addAll(entry.getValue().getAllTransitions());
-                    break;
+                    successfulTransitions.add(entry);
+                    toAdd.addAll(entry.getValue().getAllTransitions());
                 }
             }
+            queue.addAll(toAdd);
         }
-        if (entry != null && entry.getValue().isFinal) 
-            return true;
-        else 
-            return false;
+        for (Entry<String, NfaNode> entry1 : successfulTransitions) {
+            if (entry1 != null && successfulTransitions.size() >= pattern.length() && entry1.getValue().isFinal) 
+            {
+                return true;
+            } 
+        }
+        return false;
     }
 
     public void add(RegexNode regex)
@@ -118,7 +125,7 @@ public class Graph extends NfaNode {
             NfaNode newState = new NfaNode(regex.toString());
             finalStates.remove(currentState);
             currentState.addTransition(regex.toString(), newState);
-            currentState.setIsFinal(false);
+            currentState.setIsFinal(regex.toString().equals("~"));
             currentState = newState;
             finalStates.add(newState);
         }
