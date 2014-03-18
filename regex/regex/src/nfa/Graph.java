@@ -76,15 +76,17 @@ public class Graph extends NfaNode {
         for (int i = 0; i < pattern.length(); i++)
         {
             String c = pattern.charAt(i) + "";
+            Set<Entry<String, NfaNode>> toAdd = new HashSet<>();
             while (!stack.isEmpty())
             {
                 entry = stack.pop();
                 if (entry.getKey().equals(c))
                 {
-                    stack.addAll(entry.getValue().getAllTransitions());
+                    toAdd.addAll(entry.getValue().getAllTransitions());
                     break;
                 }
             }
+            stack.addAll(toAdd);
         }
         if (entry != null && entry.getValue().isFinal) 
             return true;
@@ -118,7 +120,7 @@ public class Graph extends NfaNode {
             NfaNode newState = new NfaNode(regex.toString());
             finalStates.remove(currentState);
             currentState.addTransition(regex.toString(), newState);
-            currentState.setIsFinal(false);
+            currentState.setIsFinal(regex.toString().equals("~"));
             currentState = newState;
             finalStates.add(newState);
         }
