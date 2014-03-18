@@ -29,6 +29,8 @@ import nodes.StarNode;
  */
 public class RegexParser {
     
+    public static enum Operator { CONCAT, OR, STAR }
+    
     public static Regex parse(String regex)
     {
         RegexParser r = new RegexParser();

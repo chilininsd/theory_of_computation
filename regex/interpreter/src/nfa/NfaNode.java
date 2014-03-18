@@ -106,7 +106,7 @@ public class NfaNode {
         Set<Entry<String, NfaNode>> epsilons = new HashSet<>();
         for (Map.Entry<String, NfaNode> entry : transitions.entrySet())
         {
-            if (entry.getKey().contains(EPSILON) || entry.getKey().equals("~"))
+            if (entry.getKey().contains(EPSILON))
                 epsilons.addAll(entry.getValue().getAllTransitions());
         }
         return epsilons;
