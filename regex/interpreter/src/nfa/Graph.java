@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Queue;
 import java.util.Set;
 import nodes.OrNode;
@@ -74,29 +75,34 @@ public class Graph extends NfaNode {
         queue.addAll(start.getAllTransitions());
         
         Entry<String, NfaNode> entry = null;
-        Set<Entry<String, NfaNode>> successfulTransitions = new HashSet<>();
         for (int i = 0; i < pattern.length(); i++)
         {
             Set<Entry<String, NfaNode>> toAdd = new HashSet<>();
-            String c = pattern.charAt(i) + "";
+            char c = pattern.charAt(i);
             while (!queue.isEmpty())
             {
                 entry = queue.poll();
-                if (entry.getKey().equals(c))
+                
+                if (entry.getKey().contains(EPSILON))
+                    queue.addAll(entry.getValue().getAllTransitions());
+                
+                if (entry.getKey().charAt(0) == c)
                 {
-                    successfulTransitions.add(entry);
                     toAdd.addAll(entry.getValue().getAllTransitions());
+                    if (c == pattern.charAt(pattern.length()-1) && finalStates.contains(entry.getValue()))
+                        return true;
                 }
             }
             queue.addAll(toAdd);
         }
-        for (Entry<String, NfaNode> entry1 : successfulTransitions) {
-            if (entry1 != null && successfulTransitions.size() >= pattern.length() && entry1.getValue().isFinal) 
-            {
-                return true;
-            } 
-        }
         return false;
+//        for (Entry<String, NfaNode> entry1 : successfulTransitions) {
+//            if (entry1 != null && successfulTransitions.size() >= pattern.length() && entry1.getValue().isFinal) 
+//            {
+//                return true;
+//            } 
+//        }
+//        return false;
     }
 
     public void add(RegexNode regex)
@@ -124,8 +130,12 @@ public class Graph extends NfaNode {
         {
             NfaNode newState = new NfaNode(regex.toString());
             finalStates.remove(currentState);
-            currentState.addTransition(regex.toString(), newState);
-            currentState.setIsFinal(regex.toString().equals("~"));
+            
+            if (regex.toString().equals("~"))
+                currentState.addEpsilonTransition(newState);
+            else
+                currentState.addTransition(regex.toString(), newState);
+            
             currentState = newState;
             finalStates.add(newState);
         }
@@ -144,6 +154,7 @@ public class Graph extends NfaNode {
                 nfaNode.addEpsilonTransition(machine.getStart());
             }
             finalStates.addAll(machine.getFinalStates());
+            currentState = machine;
         }
         else
         {
@@ -163,5 +174,49 @@ public class Graph extends NfaNode {
         }
         return this;
     }
+
+    @Override
+    public int hashCode()
+    {
+        int hash = 5;
+        hash = 67 * hash + Objects.hashCode(this.start);
+        hash = 67 * hash + Objects.hashCode(this.finalStates);
+        hash = 67 * hash + Objects.hashCode(this.currentState);
+        hash = 67 * hash + (this.isStar ? 1 : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (obj == null)
+        {
+            return false;
+        }
+        if (getClass() != obj.getClass())
+        {
+            return false;
+        }
+        final Graph other = (Graph) obj;
+        if (!Objects.equals(this.start, other.start))
+        {
+            return false;
+        }
+        if (!Objects.equals(this.finalStates, other.finalStates))
+        {
+            return false;
+        }
+        if (!Objects.equals(this.currentState, other.currentState))
+        {
+            return false;
+        }
+        if (this.isStar != other.isStar)
+        {
+            return false;
+        }
+        return true;
+    }
+    
+    
 
 }

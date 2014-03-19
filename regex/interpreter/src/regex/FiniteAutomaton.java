@@ -13,6 +13,7 @@ package regex;
 import exceptions.MalformedRegexException;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import model.Regex;
@@ -28,30 +29,28 @@ import nodes.StarNode;
  */
 public class FiniteAutomaton {
     
-    public static Graph toMachine(String reg)
+    public static List<String> match(String reg, List<String> testCases)
     {
         FiniteAutomaton fa = new FiniteAutomaton();
         Regex r = RegexParser.parse(reg);
-        return fa.constructMachine(r.getContents());
+        Graph g = fa.constructMachine(r.getContents());
+        List<String> returnVals = new LinkedList<>();
+        for (String string : testCases)
+        {
+            if (g.match(string))
+                returnVals.add("yes");
+            else
+                returnVals.add("no");
+        }
+        return returnVals;
     }
     
     public static void main(String[] args) throws MalformedRegexException
     {
-//        String reg = "((0|1|~)(0|1|2|3|4|5|6|7|8|9)(0|1|2|3|4|5|6|7|8|9|~)|2(0|1|2|3|4)(0|1|2|3|4|5|6|7|8|9)|25(0|1|2|3|4|5)).";
         String reg = "<((\"(a|b|'|=| |/|>|<)*\")|('(a|b|\"|=| |/|<|>)*')|(a|b|=| |/))*>";
-
         checkRegex(reg);
-        Graph m = FiniteAutomaton.toMachine(reg);
-//        List<String> testCases = Arrays.asList(new String[]{"1.", "255.", "127.", "10.", "a.", "990.", "~"});
         List<String> testCases = Arrays.asList(new String[]{"<>", "<b a='>'>", "<b/>", "<a b=\"ab'\" aba='/'>", "<a b=a<>", "<b aaa='>", "<a b='aba<' />"});
-
-        for (String string : testCases)
-        {
-            if (m.match(string))
-                System.out.println("yes");
-            else
-                System.out.println("no");
-        }
+        
     }
 
     private static void checkRegex(String string) throws MalformedRegexException

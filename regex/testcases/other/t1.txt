@@ -6,14 +6,3 @@ DbbKbKKDb
 ~
 bbK
 bbKbbK
-
-concat node
-	star node
-		or noode
-			A, b
-	concat node
-		or node
-			Db, bKb
-		star node
-			or node
-				K,b

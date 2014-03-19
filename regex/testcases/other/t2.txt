@@ -6,10 +6,3 @@ ii
 iJ
 iiiii
 IIj
-
-star node
-	concat node
-		or node
-			i, j
-		or node
-			i, j

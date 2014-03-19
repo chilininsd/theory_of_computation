@@ -6,8 +6,3 @@ eHee
 eeHeHe
 eeHeHee
 eeHeHeeH
-
-star node
-	or node
-		concat node
-		

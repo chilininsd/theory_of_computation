@@ -28,14 +28,14 @@ public class NfaNode {
     protected boolean isFinal;
     protected String name;
     public static String EPSILON = "epsilon";
-    private int epsilonCount = 0;
+    private static int uniqueifier = 0;
     
     public NfaNode(String name)
     {
         transitions = new HashMap<>();
         isStart = false;
         isFinal = true;
-        this.name = name;
+        this.name = name+uniqueifier++;
     }
     
     public NfaNode(){}
@@ -74,10 +74,7 @@ public class NfaNode {
     public int hashCode()
     {
         int hash = 7;
-        hash = 41 * hash + Objects.hashCode(this.transitions);
-        hash = 41 * hash + (this.isStart ? 1 : 0);
-        hash = 41 * hash + (this.isFinal ? 1 : 0);
-        hash = 41 * hash + Objects.hashCode(this.name);
+        hash = 41 * hash + this.name.charAt(0);
         return hash;
     }
 
@@ -91,14 +88,13 @@ public class NfaNode {
     
     public void addTransition(String input, NfaNode to)
     {
-        transitions.put(input, to);
+        transitions.put(input+uniqueifier++, to);
     }
     
     public void addEpsilonTransition(NfaNode to)
     {
         //hack due to java's lack of multimap :-\
-        transitions.put(EPSILON+epsilonCount, to);
-        ++epsilonCount;
+        transitions.put(EPSILON+uniqueifier++, to);
     }
     
     public Set<Entry<String, NfaNode>> getEpsilonTransitions()
@@ -106,8 +102,8 @@ public class NfaNode {
         Set<Entry<String, NfaNode>> epsilons = new HashSet<>();
         for (Map.Entry<String, NfaNode> entry : transitions.entrySet())
         {
-            if (entry.getKey().contains(EPSILON) || entry.getKey().equals("~"))
-                epsilons.addAll(entry.getValue().getAllTransitions());
+            if (entry.getKey().contains(EPSILON))
+                epsilons.addAll(entry.getValue().getEpsilonTransitions());
         }
         return epsilons;
     }
@@ -117,17 +113,23 @@ public class NfaNode {
         Set<Entry<String, NfaNode>> entries = new HashSet<>();
         entries.addAll(transitions.entrySet());
         entries.addAll(getEpsilonTransitions());
-        for (Entry<String, NfaNode> entry : transitions.entrySet())
-        {
-            if (entry.getKey().contains(EPSILON))
-                entries.remove(entry);
-        }
+//        for (Entry<String, NfaNode> entry : transitions.entrySet())
+//        {
+//            if (entry.getKey().contains(EPSILON))
+//                entries.remove(entry);
+//        }
         return entries;
     }
     
     @Override
     public String toString()
     {
-        return "(" + name +" " + transitions.toString() + ", " + isFinal + ")\n";
+        StringBuilder s = new StringBuilder();
+        s.append(name.charAt(0)).append("\n");
+        for (Entry<String, NfaNode> entry : transitions.entrySet())
+        {
+            s.append(entry.getKey().charAt(0)).append("->").append(entry.getValue().name.charAt(0)).append("\n");
+        }
+        return s.toString();
     }
 }
