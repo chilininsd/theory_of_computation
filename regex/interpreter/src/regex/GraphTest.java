@@ -42,9 +42,13 @@ public class GraphTest {
 
     public static void main(String[] args) throws IOException
     {
-        testAll();
+//        testAll();
+        testOtherT1();
+        testMyT1();
         testMyT2();
         testMyT3();
+        testOtherT2();
+        testOtherT3();
     }
 
     public static void testAll() throws IOException
@@ -127,10 +131,6 @@ public class GraphTest {
     {
         List<String> testCases = parseTestFile(directory, testFile);
         String regex = testCases.remove(0);
-//        if (regex.contains("*"))
-//        {
-//            return;
-//        }
         List<String> answers = parseTestFile(directory, testFile.replaceFirst("t", "a"));
 
         List<String> results = FiniteAutomaton.match(regex, testCases);

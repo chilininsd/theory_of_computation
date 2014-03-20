@@ -3,6 +3,7 @@ package nfa;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Queue;
@@ -69,10 +70,13 @@ public class Graph extends NfaNode {
         return start.toString();
     }
 
+    //a breadth first graph traversal for each symbol of the string correctly modeling epsilon transitions
     public boolean match(String pattern)
     {
         Queue<Entry<String, NfaNode>> queue = new LinkedList<>();
         queue.addAll(start.getAllTransitions());
+        if (finalStates.contains(start))
+            queue.add(createEntry("~", start));
         
         Entry<String, NfaNode> entry = null;
         for (int i = 0; i < pattern.length(); i++)
@@ -89,7 +93,7 @@ public class Graph extends NfaNode {
                 if (entry.getKey().charAt(0) == c)
                 {
                     toAdd.addAll(entry.getValue().getAllTransitions());
-                    if (c == pattern.charAt(pattern.length()-1) && finalStates.contains(entry.getValue()))
+                    if (i == pattern.length()-1 && (finalStates.contains(entry.getValue()) || epsilonTransitionsToFinal(entry.getValue())))
                         return true;
                 }
             }
@@ -170,7 +174,13 @@ public class Graph extends NfaNode {
     {
         if (isStar)
         {
-            //do stuff
+            for (NfaNode nfaNode : finalStates)
+            {
+                nfaNode.addEpsilonTransition(start);
+            }
+//            start.addEpsilonTransition(start);
+            start.setIsFinal(true);
+            finalStates.add(start);
         }
         return this;
     }
@@ -215,6 +225,23 @@ public class Graph extends NfaNode {
             return false;
         }
         return true;
+    }
+
+    private Entry<String, NfaNode> createEntry(String key, NfaNode value)
+    {
+        Map<String, NfaNode> map = new HashMap<>();
+        map.put(key, value);
+        return map.entrySet().iterator().next();
+    }
+
+    private boolean epsilonTransitionsToFinal(NfaNode value)
+    {
+        for (Entry<String, NfaNode> entry : value.getAllTransitions())
+        {
+            if (entry.getKey().contains(EPSILON) && finalStates.contains(entry.getValue())) 
+                return true;
+        }
+        return false;
     }
     
     

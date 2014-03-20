@@ -33,7 +33,7 @@ public class FiniteAutomaton {
     {
         FiniteAutomaton fa = new FiniteAutomaton();
         Regex r = RegexParser.parse(reg);
-        Graph g = fa.constructMachine(r.getContents());
+        Graph g = fa.constructMachine(r.getContents(), false);
         List<String> returnVals = new LinkedList<>();
         for (String string : testCases)
         {
@@ -68,7 +68,7 @@ public class FiniteAutomaton {
         }
     }
     
-    private Graph constructMachine(List<RegexNode> nodes)
+    private Graph constructMachine(List<RegexNode> nodes, boolean isStar)
     {
         Graph m = new Graph();
         for (RegexNode regex : nodes)
@@ -80,10 +80,11 @@ public class FiniteAutomaton {
             else if (regex instanceof ParenNode)
             {
                 ParenNode p = (ParenNode)regex;
-                m.addGraph(constructMachine(p.getContents()));
-                m.setIsStar(regex instanceof StarNode);
+                m.addGraph(constructMachine(p.getContents(), regex instanceof StarNode));
             }
+            
         }
+        m.setIsStar(isStar);
         return m.finalizeGraph();
     }
 }
