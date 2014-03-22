@@ -2,10 +2,6 @@
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
- *//*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
  */
 
 package nfa;
@@ -14,17 +10,15 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Objects;
 import java.util.Set;
 
 /**
- *
+ * A node in the graph
  * @author reuben
  */
 public class NfaNode {
     
     protected Map<String, NfaNode> transitions;
-    protected boolean isStart;
     protected boolean isFinal;
     protected String name;
     public static String EPSILON = "epsilon";
@@ -33,7 +27,6 @@ public class NfaNode {
     public NfaNode(String name)
     {
         transitions = new HashMap<>();
-        isStart = false;
         isFinal = true;
         this.name = name+uniqueifier++;
     }
@@ -48,16 +41,6 @@ public class NfaNode {
     public void setTransitions(Map<String, NfaNode> transitions)
     {
         this.transitions = transitions;
-    }
-
-    public boolean isStart()
-    {
-        return isStart;
-    }
-
-    public void setIsStart(boolean isStart)
-    {
-        this.isStart = isStart;
     }
 
     public boolean isFinal()
@@ -86,17 +69,30 @@ public class NfaNode {
         else return false;
     }
     
+    /**
+     * adds a transition to the map of transitions. Appends a "uniqueifying" incrementing number to avoid java collapsing duplicate keys
+     * @param input - the key
+     * @param to - the value
+     */
     public void addTransition(String input, NfaNode to)
     {
         transitions.put(input+uniqueifier++, to);
     }
     
+    /**
+     * adds an epsilon transition.
+     * @param to 
+     */
     public void addEpsilonTransition(NfaNode to)
     {
         //hack due to java's lack of multimap :-\
         transitions.put(EPSILON+uniqueifier++, to);
     }
     
+    /**
+     * Returns all epsilon transitions from this state along with the successive epsilon transitions
+     * @return - all the epsilon transitions
+     */
     public Set<Entry<String, NfaNode>> getEpsilonTransitions()
     {
         Set<Entry<String, NfaNode>> epsilons = new HashSet<>();
@@ -108,16 +104,15 @@ public class NfaNode {
         return epsilons;
     }
     
+    /**
+     * returns all transitions from this map
+     * @return 
+     */
     public Set<Entry<String, NfaNode>> getAllTransitions()
     {
         Set<Entry<String, NfaNode>> entries = new HashSet<>();
         entries.addAll(transitions.entrySet());
         entries.addAll(getEpsilonTransitions());
-//        for (Entry<String, NfaNode> entry : transitions.entrySet())
-//        {
-//            if (entry.getKey().contains(EPSILON))
-//                entries.remove(entry);
-//        }
         return entries;
     }
     

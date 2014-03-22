@@ -13,7 +13,9 @@ import nodes.RegexNode;
 import nodes.SimpleNode;
 
 /**
- *
+ * The data structure representing a graph. 
+ * The field "start" is where the main contents of the graph reside
+ * 
  * @author reuben
  */
 public class Graph extends NfaNode {
@@ -28,7 +30,6 @@ public class Graph extends NfaNode {
         transitions = new HashMap<>();
         finalStates = new HashSet<>();
         start = new NfaNode("start");
-        start.setIsStart(true);
         start.setIsFinal(false);
         currentState = start;
         isStar = false;
@@ -70,12 +71,16 @@ public class Graph extends NfaNode {
         return start.toString();
     }
 
-    //a breadth first graph traversal for each symbol of the string correctly modeling epsilon transitions
+    /**
+     * A breadth first graph traversal for each symbol of the string, correctly modeling epsilon transitions
+     * @param pattern - the string to match
+     * @return - whether it matched or not
+     */
     public boolean match(String pattern)
     {
         Queue<Entry<String, NfaNode>> queue = new LinkedList<>();
         queue.addAll(start.getAllTransitions());
-        if (finalStates.contains(start))
+        if (finalStates.contains(start) || epsilonTransitionsToFinal(start))
             queue.add(createEntry("~", start));
         
         Entry<String, NfaNode> entry = null;
@@ -100,15 +105,12 @@ public class Graph extends NfaNode {
             queue.addAll(toAdd);
         }
         return false;
-//        for (Entry<String, NfaNode> entry1 : successfulTransitions) {
-//            if (entry1 != null && successfulTransitions.size() >= pattern.length() && entry1.getValue().isFinal) 
-//            {
-//                return true;
-//            } 
-//        }
-//        return false;
     }
 
+    /**
+     * Adds a regex to the existing machine, various states of the currentState and the regex being added are handled using polymorphism 
+     * @param regex - the regex to add
+     */
     public void add(RegexNode regex)
     {
         if (regex instanceof OrNode)
@@ -145,6 +147,10 @@ public class Graph extends NfaNode {
         }
     }
 
+    /**
+     * Combines two machines or a machine and a simple (single character) regex.
+     * @param machine - the machine to add to the existing machine
+     */
     public void addGraph(Graph machine)
     {
         if (currentState instanceof Graph)
@@ -170,7 +176,12 @@ public class Graph extends NfaNode {
         }
     }
 
-    public Graph finalizeGraph()
+    
+    /**
+     * "starifies" the machine by adding necessary transitions and final state modifications.
+     * @return - the "starified" graph
+     */
+    public Graph starifyMachine()
     {
         if (isStar)
         {
@@ -178,7 +189,6 @@ public class Graph extends NfaNode {
             {
                 nfaNode.addEpsilonTransition(start);
             }
-//            start.addEpsilonTransition(start);
             start.setIsFinal(true);
             finalStates.add(start);
         }
@@ -234,9 +244,16 @@ public class Graph extends NfaNode {
         return map.entrySet().iterator().next();
     }
 
-    private boolean epsilonTransitionsToFinal(NfaNode value)
+    /**
+     * A kind of lame function necessary because when building machines I incorrectly add another epsilon transition from the start state
+     * thereby producing false negatives for star machines thus, this function needed to be introduced. It determines whether the given state
+     * epsilon transitions to a final state.
+     * @param node - the node to check
+     * @return - whether it epsilon transitions to a final state or not
+     */
+    private boolean epsilonTransitionsToFinal(NfaNode node)
     {
-        for (Entry<String, NfaNode> entry : value.getAllTransitions())
+        for (Entry<String, NfaNode> entry : node.getAllTransitions())
         {
             if (entry.getKey().contains(EPSILON) && finalStates.contains(entry.getValue())) 
                 return true;

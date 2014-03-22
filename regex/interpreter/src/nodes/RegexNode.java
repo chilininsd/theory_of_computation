@@ -7,7 +7,7 @@
 package nodes;
 
 /**
- *
+ * The base class for all nodes during the parsing procedure
  * @author reuben
  */
 public abstract class RegexNode implements Comparable {

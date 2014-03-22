@@ -9,7 +9,7 @@ package nodes;
 import model.Symbol;
 
 /**
- *
+ * A node for star regexes
  * @author reuben
  */
 public class StarNode extends ParenNode {

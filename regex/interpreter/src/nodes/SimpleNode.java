@@ -9,7 +9,7 @@ package nodes;
 import model.Symbol;
 
 /**
- *
+ * A base class for for all single characters that aren't involved with parenthesized regexes
  * @author reuben
  */
 public class SimpleNode extends RegexNode {

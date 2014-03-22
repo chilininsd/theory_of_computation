@@ -9,7 +9,7 @@ package nodes;
 import model.Symbol;
 
 /**
- *
+ * A node representing a regex |
  * @author reuben
  */
 public class OrNode extends SimpleNode {

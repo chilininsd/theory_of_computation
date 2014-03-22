@@ -13,6 +13,6 @@ package exceptions;
 public class MalformedRegexException extends Exception {
     public MalformedRegexException(String symbol)
     {
-        super("Regex was not formed correctly, invalid symbol = \"" + symbol + "\"");
+        super("Regex was not formed correctly according to alphabet given in assignment, invalid symbol = \"" + symbol + "\"");
     }
 }

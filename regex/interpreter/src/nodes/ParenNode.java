@@ -10,7 +10,7 @@ import java.util.List;
 import model.Symbol;
 
 /**
- *
+ * A node representing parenthesized regexes
  * @author reuben
  */
 public class ParenNode extends RegexNode {

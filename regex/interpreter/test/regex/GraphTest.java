@@ -25,6 +25,7 @@ import nodes.OrNode;
 import nodes.RegexNode;
 import nodes.SimpleNode;
 import regex.FiniteAutomaton;
+import regex.FiniteAutomaton;
 
 /**
  *
@@ -43,12 +44,14 @@ public class GraphTest {
     public static void main(String[] args) throws IOException
     {
 //        testAll();
-        testOtherT1();
+        testOtherT2();
         testMyT1();
+        testOtherT1();
         testMyT2();
         testMyT3();
-        testOtherT2();
         testOtherT3();
+        testMyT4();
+        testMyT5();
     }
 
     public static void testAll() throws IOException
@@ -74,6 +77,16 @@ public class GraphTest {
     {
         runTest(myDir, "t3.txt");
     }
+    
+    public static void testMyT4() throws IOException
+    {
+        runTest(myDir, "t4.txt");
+    }
+    
+    public static void testMyT5() throws IOException
+    {
+        runTest(myDir, "t5.txt");
+    }
 
     public static void testOtherT1() throws IOException
     {
@@ -88,28 +101,6 @@ public class GraphTest {
     public static void testOtherT3() throws IOException
     {
         runTest(otherDir, "t3.txt");
-    }
-
-    public Graph createGraph(RegexNode... n)
-    {
-        Graph g = new Graph();
-        for (RegexNode reg : n)
-        {
-            g.add(reg);
-        }
-        return g;
-    }
-
-    public RegexNode createRegexNode(String name)
-    {
-        if (name.equals("|"))
-        {
-            return new OrNode(new Symbol(name.charAt(0), 0), 0);
-        }
-        else
-        {
-            return new SimpleNode(new Symbol(name.charAt(0), 0), 0);
-        }
     }
 
     private static List<String> parseTestFile(String directory, String t1txt) throws IOException
