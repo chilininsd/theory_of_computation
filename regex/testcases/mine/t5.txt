@@ -1,0 +1,8 @@
+(a|b)*a
+aaa
+bbb
+aba
+bba
+~
+a
+mp
