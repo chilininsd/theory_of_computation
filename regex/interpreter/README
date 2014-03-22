@@ -1,0 +1,61 @@
+****************
+* Project 1
+* CS 361
+* March 21, 2014
+* Reuben Tanner
+**************** 
+
+PROJECT OVERVIEW:
+
+Parses the given regex and creates an NFA from it. The machine is then traversed based on the given test cases.
+
+SUBMITTED FILES:
+
+├── build.xml								-- ant script to build project
+├── Makefile 								-- makefile for easy building
+├── manifest.mf 							-- netbeans config
+├── nbproject								-- netbeans config
+│   ├── build-impl.xml 						-- netbeans config
+│   ├── genfiles.properties 				-- netbeans config
+│   ├── private 							-- netbeans config
+│   │   ├── config.properties 				-- netbeans config
+│   │   ├── private.properties 				-- netbeans config
+│   │   └── private.xml 					-- netbeans config
+│   ├── project.properties 					-- netbeans config
+│   └── project.xml 						-- netbeans config
+├── README									-- this file
+├── src 									-- netbeans config files
+│   ├── exceptions							-- for naughty regexs
+│   │   └── MalformedRegexException.java 	-- thrown when a regex does not conform to my groups alphabet
+│   ├── model								-- models
+│   │   ├── Regex.java						-- parsed regex
+│   │   └── Symbol.java						-- basic unit of the regex parsing procedure
+│   ├── nfa 								-- classes used in nfa
+│   │   ├── Graph.java 						-- the containing datastructure, uses a java.util.Map as its transition structure
+│   │   └── NfaNode.java 					-- a node in the graph
+│   ├── nodes 								-- regex nodes; not graph nodes
+│   │   ├── OrNode.java 					-- or node
+│   │   ├── ParenNode.java					-- sub-base node
+│   │   ├── RegexNode.java					-- base class
+│   │   ├── SimpleNode.java 				-- sub-base class
+│   │   └── StarNode.java 					-- star node
+│   └── regex
+│       ├── FiniteAutomaton.java 			-- the main worker, calls RegexParser and traverses the machine for the given test cases
+│       └── RegexParser.java 				-- parses the regex
+└── test 									-- test files
+    └── regex 								-- test files
+        ├── FiniteAutomatonTest.java 		-- test files	
+        ├── GraphTest.java					-- test files
+        └── RegexParserTest.java			-- test files
+
+BUILDING AND RUNNING:
+	Leave files in the directory structure specified above, and type the 
+	following commands from the top	level directory.
+
+	Compile:
+		make
+
+	Run:
+		java -jar regex.jar < test.txt
+
+		Where test.txt is of the same form as the files given originally.
